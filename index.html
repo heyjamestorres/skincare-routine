@@ -1,0 +1,2319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>James' Skincare Weekly Routine</title>
+  <style>
+    :root {
+      --bg: #f4f4f2;
+      --card: #ffffff;
+      --ink: #222222;
+      --muted: #6b6b6b;
+      --line: #d7d7d2;
+      --soft: #eeeeeb;
+      --accent: #828282;
+      --accent-dark: #5f5f5f;
+      --green: #4f7f5f;
+      --red: #9a4646;
+      --yellow: #8a6f38;
+      --blue: #526b82;
+      --radius: 22px;
+      --shadow: 0 10px 28px rgba(0,0,0,.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #fafafa, var(--bg));
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+      padding: env(safe-area-inset-top) 14px env(safe-area-inset-bottom);
+    }
+
+    .app {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 18px 0 40px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(38px, 10vw, 66px);
+      font-weight: 400;
+      letter-spacing: 1px;
+      line-height: .95;
+      margin: 14px 0 6px;
+    }
+
+    .subtitle {
+      text-transform: uppercase;
+      letter-spacing: 5px;
+      color: var(--muted);
+      font-weight: 800;
+      font-size: 12px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .top-row, .routine-head, .log-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .today strong { font-size: 17px; }
+
+    .muted {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .pill {
+      background: var(--soft);
+      color: var(--ink);
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    h2 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 25px;
+      font-weight: 500;
+      margin: 0;
+    }
+
+    h3 {
+      margin: 0;
+      font-size: 17px;
+    }
+
+    button {
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .day-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .day-card {
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: #fbfbfa;
+      overflow: hidden;
+    }
+
+    .day-header {
+      width: 100%;
+      border: 0;
+      background: var(--soft);
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      text-align: left;
+      color: var(--ink);
+    }
+
+    .day-header.today {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .day-header .arrow {
+      font-size: 20px;
+      font-weight: 900;
+      transition: .2s ease;
+    }
+
+    .day-card.open .arrow { transform: rotate(180deg); }
+
+    .day-content {
+      display: none;
+      padding: 14px;
+    }
+
+    .day-card.open .day-content { display: block; }
+
+    .routine-block {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #fff;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+
+    .routine-block:last-child { margin-bottom: 0; }
+
+    .routine-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .routine-label {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .8px;
+    }
+
+    .products {
+      display: grid;
+      gap: 9px;
+    }
+
+    .product {
+      border: 1px solid var(--line);
+      background: #fbfbfa;
+      border-radius: 16px;
+      padding: 11px;
+      display: grid;
+      grid-template-columns: 32px 1fr;
+      gap: 9px;
+      align-items: start;
+    }
+
+    .product.done {
+      background: #f1f7f2;
+      border-color: #c8d9cd;
+    }
+
+    .check {
+      width: 27px;
+      height: 27px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      display: grid;
+      place-items: center;
+      color: transparent;
+      font-weight: 900;
+      margin-top: 1px;
+    }
+
+    .product.done .check {
+      background: var(--green);
+      border-color: var(--green);
+      color: #fff;
+    }
+
+    .product-name {
+      font-weight: 900;
+      font-size: 14px;
+      line-height: 1.25;
+    }
+
+    .product-use {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 3px;
+      line-height: 1.35;
+    }
+
+    .tip {
+      margin-top: 8px;
+      border-left: 4px solid var(--accent);
+      padding: 8px 10px;
+      background: #f3f3f1;
+      border-radius: 10px;
+      color: #333;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .cleanser-choice {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .choice-btn {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      border-radius: 13px;
+      padding: 10px 8px;
+      font-weight: 900;
+      font-size: 12px;
+      line-height: 1.2;
+    }
+
+    .choice-btn.selected {
+      background: var(--accent-dark);
+      color: #fff;
+      border-color: var(--accent-dark);
+    }
+
+    .badge-row {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .badge {
+      border-radius: 999px;
+      padding: 5px 8px;
+      background: var(--soft);
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .badge.active {
+      color: #fff;
+      background: var(--yellow);
+    }
+
+    .timer-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      margin-top: 10px;
+      background: #f0f0ee;
+      border-radius: 14px;
+      padding: 9px;
+    }
+
+    .timer {
+      font-weight: 900;
+      font-size: 18px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .timer-btn {
+      border: 0;
+      border-radius: 12px;
+      padding: 9px 11px;
+      background: var(--accent);
+      color: white;
+      font-weight: 900;
+      font-size: 13px;
+    }
+
+    .timer-btn.secondary {
+      background: var(--soft);
+      color: var(--ink);
+    }
+
+    textarea, input[type="url"], input[type="text"] {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: #fbfbfa;
+      border-radius: 16px;
+      padding: 13px;
+      font: inherit;
+      outline: none;
+    }
+
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+      margin-top: 10px;
+    }
+
+    .photo-box, .sync-box {
+      border: 1px dashed var(--line);
+      background: #fcfcfb;
+      border-radius: 16px;
+      padding: 12px;
+      margin-top: 10px;
+    }
+
+    .photo-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .photo-row input {
+      max-width: 100%;
+      font-size: 13px;
+    }
+
+    .preview {
+      margin-top: 10px;
+      display: none;
+      width: 100%;
+      max-height: 260px;
+      object-fit: cover;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-top: 10px;
+    }
+
+    .primary, .secondary, .danger, .blue {
+      border: 0;
+      border-radius: 16px;
+      padding: 13px 12px;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .blue {
+      background: var(--blue);
+      color: #fff;
+    }
+
+    .secondary {
+      background: var(--soft);
+      color: var(--ink);
+    }
+
+    .danger {
+      background: #f4e6e6;
+      color: var(--red);
+    }
+
+    .smart-prompt {
+      display: none;
+      border: 1px solid #c8d9cd;
+      background: #f1f7f2;
+      color: #23432d;
+      border-radius: 16px;
+      padding: 12px;
+      font-size: 14px;
+      line-height: 1.45;
+      margin-top: 10px;
+    }
+
+    .warning {
+      border: 1px solid #dacaca;
+      background: #fffafa;
+      border-radius: 16px;
+      padding: 12px;
+      color: #4c3333;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .log {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px;
+      background: #fbfbfa;
+      font-size: 14px;
+      margin-top: 9px;
+    }
+
+    .log p {
+      margin: 8px 0 0;
+      line-height: 1.4;
+    }
+
+    .log img {
+      width: 100%;
+      max-height: 260px;
+      object-fit: cover;
+      border-radius: 14px;
+      margin-top: 10px;
+      border: 1px solid var(--line);
+    }
+
+    .empty {
+      color: var(--muted);
+      text-align: center;
+      padding: 20px;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(18px + env(safe-area-inset-bottom));
+      transform: translateX(-50%) translateY(80px);
+      background: #222;
+      color: white;
+      padding: 12px 16px;
+      border-radius: 999px;
+      opacity: 0;
+      transition: .25s ease;
+      z-index: 20;
+      font-weight: 800;
+      font-size: 14px;
+      box-shadow: 0 10px 25px rgba(0,0,0,.20);
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 420px) {
+      .product { grid-template-columns: 30px 1fr; }
+      .product-name { font-size: 13.5px; }
+      h2 { font-size: 23px; }
+      .cleanser-choice, .actions { grid-template-columns: 1fr; }
+      .photo-row { grid-template-columns: 1fr; }
+    }
+  
+    .version-footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      margin: 18px 0 4px;
+    }
+
+    .version-link {
+      border: 0;
+      background: transparent;
+      color: var(--accent-dark);
+      font-weight: 900;
+      text-decoration: underline;
+      padding: 8px;
+      font-size: 13px;
+    }
+
+    .version-panel {
+      display: none;
+      margin-top: 12px;
+      text-align: left;
+    }
+
+    .version-panel.show {
+      display: block;
+    }
+
+    .version-item {
+      border: 1px solid var(--line);
+      background: #fbfbfa;
+      border-radius: 16px;
+      padding: 12px;
+      margin-top: 9px;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .version-item.current {
+      border-color: var(--accent);
+      background: #f2f2f0;
+    }
+
+    .version-item ul {
+      margin: 8px 0 0 18px;
+      padding: 0;
+    }
+
+    .version-item li {
+      margin: 4px 0;
+    }
+
+    .old-version-logs {
+      display: none;
+      margin-top: 10px;
+    }
+
+    .old-version-logs.show {
+      display: block;
+    }
+
+    code {
+      background: var(--soft);
+      padding: 2px 5px;
+      border-radius: 6px;
+      font-size: 12px;
+    }
+
+  
+    .quick-nav {
+      position: fixed;
+      right: 14px;
+      bottom: calc(82px + env(safe-area-inset-bottom));
+      display: grid;
+      gap: 8px;
+      z-index: 30;
+    }
+
+    .quick-nav button {
+      width: 46px;
+      height: 46px;
+      border: 0;
+      border-radius: 50%;
+      background: var(--accent-dark);
+      color: white;
+      font-size: 22px;
+      font-weight: 900;
+      box-shadow: 0 8px 20px rgba(0,0,0,.18);
+    }
+
+    .quick-nav button:active {
+      transform: scale(.96);
+    }
+
+  
+    /* v5.1 iOS liquid glass visual refresh */
+    :root {
+      --bg: #f5f5f7;
+      --card: rgba(255, 255, 255, .58);
+      --ink: #1d1d1f;
+      --muted: rgba(29, 29, 31, .62);
+      --line: rgba(255, 255, 255, .58);
+      --soft: rgba(255, 255, 255, .38);
+      --accent: rgba(130, 130, 130, .72);
+      --accent-dark: rgba(72, 72, 74, .82);
+      --shadow: 0 18px 45px rgba(0,0,0,.12);
+    }
+
+    body {
+      background:
+        radial-gradient(circle at 15% 5%, rgba(255,255,255,.92), transparent 30%),
+        radial-gradient(circle at 88% 12%, rgba(210,220,235,.72), transparent 34%),
+        radial-gradient(circle at 20% 78%, rgba(222,222,226,.80), transparent 34%),
+        linear-gradient(160deg, #f9f9fb 0%, #eeeeef 48%, #f7f7f8 100%);
+      background-attachment: fixed;
+    }
+
+    .card,
+    .day-card,
+    .routine-block,
+    .product,
+    .log,
+    .version-item,
+    .sync-box,
+    .photo-box,
+    .warning,
+    .optional {
+      background: rgba(255,255,255,.48) !important;
+      border: 1px solid rgba(255,255,255,.62) !important;
+      -webkit-backdrop-filter: blur(24px) saturate(1.65);
+      backdrop-filter: blur(24px) saturate(1.65);
+      box-shadow:
+        0 18px 45px rgba(0,0,0,.10),
+        inset 0 1px 0 rgba(255,255,255,.72),
+        inset 0 -1px 0 rgba(255,255,255,.18);
+    }
+
+    .card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before,
+    .day-card::before,
+    .routine-block::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(135deg, rgba(255,255,255,.48), rgba(255,255,255,.08) 48%, rgba(255,255,255,.22));
+      opacity: .75;
+      border-radius: inherit;
+    }
+
+    .day-card,
+    .routine-block {
+      position: relative;
+    }
+
+    .card > *,
+    .day-card > *,
+    .routine-block > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .day-header {
+      background: rgba(255,255,255,.38) !important;
+      -webkit-backdrop-filter: blur(18px) saturate(1.5);
+      backdrop-filter: blur(18px) saturate(1.5);
+      border-bottom: 1px solid rgba(255,255,255,.38);
+    }
+
+    .day-header.today {
+      background: rgba(72, 72, 74, .68) !important;
+      color: #fff;
+    }
+
+    .product.done {
+      background: rgba(232, 246, 235, .62) !important;
+      border-color: rgba(177, 216, 187, .72) !important;
+    }
+
+    .smart-prompt {
+      background: rgba(235, 248, 238, .58);
+      border-color: rgba(183, 220, 191, .72);
+      -webkit-backdrop-filter: blur(18px) saturate(1.4);
+      backdrop-filter: blur(18px) saturate(1.4);
+    }
+
+    .tip {
+      background: rgba(255,255,255,.38);
+      border-left-color: rgba(72,72,74,.52);
+      -webkit-backdrop-filter: blur(14px);
+      backdrop-filter: blur(14px);
+    }
+
+    .pill,
+    .badge,
+    .choice-btn,
+    .timer-row,
+    textarea,
+    input[type="url"],
+    input[type="text"] {
+      background: rgba(255,255,255,.38) !important;
+      border: 1px solid rgba(255,255,255,.56) !important;
+      -webkit-backdrop-filter: blur(14px) saturate(1.35);
+      backdrop-filter: blur(14px) saturate(1.35);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.55);
+    }
+
+    .choice-btn.selected,
+    .primary,
+    .blue,
+    .tab.active {
+      background: rgba(72,72,74,.72) !important;
+      -webkit-backdrop-filter: blur(18px) saturate(1.4);
+      backdrop-filter: blur(18px) saturate(1.4);
+      box-shadow:
+        0 10px 24px rgba(0,0,0,.16),
+        inset 0 1px 0 rgba(255,255,255,.24);
+    }
+
+    .secondary,
+    .danger,
+    .timer-btn.secondary {
+      background: rgba(255,255,255,.42) !important;
+      -webkit-backdrop-filter: blur(14px) saturate(1.3);
+      backdrop-filter: blur(14px) saturate(1.3);
+      border: 1px solid rgba(255,255,255,.52);
+    }
+
+    .quick-nav button {
+      background: rgba(72,72,74,.64);
+      -webkit-backdrop-filter: blur(18px) saturate(1.6);
+      backdrop-filter: blur(18px) saturate(1.6);
+      box-shadow:
+        0 14px 30px rgba(0,0,0,.20),
+        inset 0 1px 0 rgba(255,255,255,.32);
+    }
+
+    header h1 {
+      text-shadow: 0 1px 0 rgba(255,255,255,.75);
+    }
+
+    .subtitle {
+      color: rgba(29,29,31,.56);
+    }
+
+  
+    /* v5.1 closer iOS liquid glass controls, dark gray highlights */
+    :root {
+      --glass-highlight: rgba(255,255,255,.72);
+      --glass-mid: rgba(255,255,255,.36);
+      --glass-low: rgba(255,255,255,.16);
+      --dark-gray: rgba(54,54,56,.84);
+      --dark-gray-solid: #3f3f42;
+    }
+
+    .primary,
+    .blue,
+    .choice-btn.selected,
+    .day-header.today,
+    .tab.active {
+      background:
+        linear-gradient(180deg, rgba(95,95,98,.86), rgba(48,48,50,.82)) !important;
+      color: #fff !important;
+      border: 1px solid rgba(255,255,255,.36) !important;
+      box-shadow:
+        0 16px 35px rgba(0,0,0,.22),
+        inset 0 1px 1px rgba(255,255,255,.42),
+        inset 0 -1px 2px rgba(0,0,0,.18) !important;
+      -webkit-backdrop-filter: blur(26px) saturate(1.8);
+      backdrop-filter: blur(26px) saturate(1.8);
+    }
+
+    .badge.active {
+      background:
+        linear-gradient(180deg, rgba(92,92,95,.86), rgba(54,54,56,.80)) !important;
+      color: #fff !important;
+      border: 1px solid rgba(255,255,255,.32) !important;
+    }
+
+    .check {
+      border-color: rgba(80,80,82,.62) !important;
+      background: rgba(255,255,255,.24);
+      -webkit-backdrop-filter: blur(14px) saturate(1.45);
+      backdrop-filter: blur(14px) saturate(1.45);
+      box-shadow:
+        inset 0 1px 1px rgba(255,255,255,.56),
+        0 6px 14px rgba(0,0,0,.08);
+    }
+
+    .product.done .check {
+      background:
+        linear-gradient(180deg, rgba(82,82,85,.92), rgba(42,42,44,.86)) !important;
+      border-color: rgba(255,255,255,.38) !important;
+      color: #fff !important;
+      box-shadow:
+        0 10px 22px rgba(0,0,0,.18),
+        inset 0 1px 1px rgba(255,255,255,.38) !important;
+    }
+
+    .product.done {
+      background: rgba(255,255,255,.54) !important;
+      border-color: rgba(255,255,255,.72) !important;
+    }
+
+    .card,
+    .day-card,
+    .routine-block,
+    .product,
+    .log,
+    .version-item,
+    .sync-box,
+    .photo-box,
+    .warning,
+    .optional {
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.64), rgba(255,255,255,.22) 48%, rgba(255,255,255,.46)) !important;
+      border: 1px solid rgba(255,255,255,.74) !important;
+      -webkit-backdrop-filter: blur(34px) saturate(1.95);
+      backdrop-filter: blur(34px) saturate(1.95);
+      box-shadow:
+        0 22px 55px rgba(0,0,0,.14),
+        inset 0 1px 1px rgba(255,255,255,.86),
+        inset 0 -1px 1px rgba(255,255,255,.18) !important;
+    }
+
+    .day-header,
+    .pill,
+    .badge,
+    .choice-btn,
+    .timer-row,
+    textarea,
+    input[type="url"],
+    input[type="text"],
+    .secondary,
+    .danger,
+    .timer-btn.secondary,
+    .tip,
+    .smart-prompt {
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.62), rgba(255,255,255,.24) 50%, rgba(255,255,255,.46)) !important;
+      border: 1px solid rgba(255,255,255,.72) !important;
+      -webkit-backdrop-filter: blur(28px) saturate(1.8);
+      backdrop-filter: blur(28px) saturate(1.8);
+      box-shadow:
+        0 10px 26px rgba(0,0,0,.08),
+        inset 0 1px 1px rgba(255,255,255,.82),
+        inset 0 -1px 1px rgba(255,255,255,.18) !important;
+    }
+
+    .day-header,
+    .choice-btn,
+    .primary,
+    .secondary,
+    .danger,
+    .blue,
+    .timer-btn,
+    .quick-nav button,
+    .version-link {
+      transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+    }
+
+    .day-header:active,
+    .choice-btn:active,
+    .primary:active,
+    .secondary:active,
+    .danger:active,
+    .blue:active,
+    .timer-btn:active,
+    .quick-nav button:active {
+      transform: scale(.985);
+    }
+
+    .choice-btn {
+      min-height: 76px;
+      color: rgba(29,29,31,.82);
+    }
+
+    .choice-btn.selected {
+      color: #fff !important;
+    }
+
+    .quick-nav button {
+      background:
+        linear-gradient(180deg, rgba(88,88,91,.78), rgba(44,44,46,.78)) !important;
+      border: 1px solid rgba(255,255,255,.42);
+      color: #fff;
+      -webkit-backdrop-filter: blur(28px) saturate(1.9);
+      backdrop-filter: blur(28px) saturate(1.9);
+      box-shadow:
+        0 18px 36px rgba(0,0,0,.24),
+        inset 0 1px 1px rgba(255,255,255,.38) !important;
+    }
+
+    .version-link {
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.50), rgba(255,255,255,.22)) !important;
+      border: 1px solid rgba(255,255,255,.62) !important;
+      border-radius: 999px;
+      text-decoration: none !important;
+      padding: 8px 13px !important;
+      -webkit-backdrop-filter: blur(18px) saturate(1.6);
+      backdrop-filter: blur(18px) saturate(1.6);
+      box-shadow: inset 0 1px 1px rgba(255,255,255,.72);
+    }
+
+    /* old red danger button is now frosted neutral, text stays muted red only */
+    .danger {
+      color: #7b4a4a !important;
+    }
+
+  
+    /* v5.1 all buttons liquid glass + temporary dark gray click feedback */
+    button,
+    .primary,
+    .secondary,
+    .danger,
+    .blue,
+    .timer-btn,
+    .choice-btn,
+    .day-header,
+    .version-link,
+    .tab,
+    .quick-nav button {
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.64), rgba(255,255,255,.24) 48%, rgba(255,255,255,.46)) !important;
+      border: 1px solid rgba(255,255,255,.74) !important;
+      color: rgba(29,29,31,.86) !important;
+      -webkit-backdrop-filter: blur(30px) saturate(1.9);
+      backdrop-filter: blur(30px) saturate(1.9);
+      box-shadow:
+        0 14px 32px rgba(0,0,0,.11),
+        inset 0 1px 1px rgba(255,255,255,.88),
+        inset 0 -1px 1px rgba(255,255,255,.18) !important;
+      transition:
+        background .28s ease,
+        color .28s ease,
+        box-shadow .28s ease,
+        transform .15s ease,
+        border-color .28s ease !important;
+    }
+
+    .day-header.today,
+    .choice-btn.selected,
+    .tab.active {
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.66), rgba(255,255,255,.28) 48%, rgba(255,255,255,.46)) !important;
+      color: rgba(29,29,31,.90) !important;
+      border-color: rgba(255,255,255,.78) !important;
+    }
+
+    button.glass-pressed,
+    .primary.glass-pressed,
+    .secondary.glass-pressed,
+    .danger.glass-pressed,
+    .blue.glass-pressed,
+    .timer-btn.glass-pressed,
+    .choice-btn.glass-pressed,
+    .day-header.glass-pressed,
+    .version-link.glass-pressed,
+    .tab.glass-pressed,
+    .quick-nav button.glass-pressed {
+      background:
+        linear-gradient(180deg, rgba(88,88,91,.92), rgba(42,42,44,.88)) !important;
+      color: #fff !important;
+      border-color: rgba(255,255,255,.42) !important;
+      box-shadow:
+        0 18px 38px rgba(0,0,0,.24),
+        inset 0 1px 1px rgba(255,255,255,.38),
+        inset 0 -1px 2px rgba(0,0,0,.22) !important;
+      transform: scale(.985);
+    }
+
+    .product {
+      transition:
+        background .28s ease,
+        border-color .28s ease,
+        box-shadow .28s ease,
+        transform .15s ease !important;
+    }
+
+    .product.glass-pressed {
+      background:
+        linear-gradient(180deg, rgba(88,88,91,.88), rgba(42,42,44,.84)) !important;
+      color: #fff !important;
+      border-color: rgba(255,255,255,.42) !important;
+      transform: scale(.99);
+    }
+
+    .product.glass-pressed .product-use,
+    .product.glass-pressed .muted,
+    .product.glass-pressed .tip {
+      color: rgba(255,255,255,.88) !important;
+    }
+
+    .product.done {
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.66), rgba(255,255,255,.26) 48%, rgba(255,255,255,.46)) !important;
+      border-color: rgba(255,255,255,.78) !important;
+    }
+
+    .product.done .check {
+      background:
+        linear-gradient(180deg, rgba(72,72,74,.94), rgba(36,36,38,.88)) !important;
+      color: #fff !important;
+      border-color: rgba(255,255,255,.46) !important;
+    }
+
+    .badge.active {
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.56), rgba(255,255,255,.24)) !important;
+      color: rgba(29,29,31,.86) !important;
+      border-color: rgba(255,255,255,.68) !important;
+    }
+
+    .quick-nav button {
+      font-size: 22px !important;
+      color: rgba(29,29,31,.86) !important;
+    }
+
+    .danger {
+      color: rgba(122, 64, 64, .92) !important;
+    }
+
+    .danger.glass-pressed {
+      color: #fff !important;
+    }
+
+  
+    /* v5.1 dynamic streak badge */
+    .pill.streak-0 {
+      background: linear-gradient(135deg, rgba(255,255,255,.60), rgba(255,255,255,.25), rgba(255,255,255,.46)) !important;
+      color: rgba(29,29,31,.78) !important;
+    }
+
+    .pill.streak-7 {
+      background: linear-gradient(180deg, rgba(88,88,91,.82), rgba(44,44,46,.82)) !important;
+      color: #fff !important;
+      box-shadow:
+        0 16px 34px rgba(0,0,0,.20),
+        inset 0 1px 1px rgba(255,255,255,.34) !important;
+    }
+
+    .pill.streak-14 {
+      background: linear-gradient(135deg, rgba(245,245,247,.86), rgba(205,209,214,.70), rgba(250,250,252,.82)) !important;
+      color: rgba(45,45,48,.92) !important;
+      border-color: rgba(255,255,255,.86) !important;
+      box-shadow:
+        0 16px 36px rgba(90,96,104,.18),
+        inset 0 1px 1px rgba(255,255,255,.82) !important;
+    }
+
+    .pill.streak-30 {
+      background: linear-gradient(135deg, rgba(247,238,210,.90), rgba(229,206,150,.70), rgba(252,246,229,.88)) !important;
+      color: rgba(73,58,22,.95) !important;
+      border-color: rgba(255,248,225,.92) !important;
+      box-shadow:
+        0 18px 40px rgba(165,132,46,.22),
+        inset 0 1px 1px rgba(255,255,255,.84) !important;
+    }
+
+    .pill.streak-60 {
+      background: linear-gradient(135deg, rgba(239,243,248,.92), rgba(186,195,208,.76), rgba(248,250,253,.92)) !important;
+      color: rgba(44,52,63,.96) !important;
+      border-color: rgba(255,255,255,.92) !important;
+      box-shadow:
+        0 18px 42px rgba(85,104,128,.24),
+        inset 0 1px 1px rgba(255,255,255,.88) !important;
+    }
+
+    .pill.streak-100 {
+      background: linear-gradient(135deg, rgba(255,255,255,.96), rgba(224,228,235,.86), rgba(255,244,214,.90)) !important;
+      color: rgba(40,40,44,.98) !important;
+      border-color: rgba(255,255,255,.96) !important;
+      box-shadow:
+        0 22px 46px rgba(115,115,125,.22),
+        inset 0 1px 1px rgba(255,255,255,.92) !important;
+    }
+
+    .streak-caption {
+      display: block;
+      font-size: 11px;
+      font-weight: 800;
+      opacity: .92;
+      margin-top: 2px;
+      letter-spacing: .15px;
+    }
+
+  
+    /* v5.1 minimal today card + clearer history actions */
+    .today-card-minimal {
+      padding: 14px 16px !important;
+    }
+
+    .today-minimal-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .today-minimal-left {
+      min-width: 0;
+    }
+
+    .today-minimal-left strong {
+      display: block;
+      font-size: 17px;
+      line-height: 1.2;
+    }
+
+    .today-minimal-left .muted {
+      display: block;
+      margin-top: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 48vw;
+    }
+
+    .today-mini-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .mini-btn {
+      min-width: 42px;
+      min-height: 42px;
+      border-radius: 999px !important;
+      padding: 9px 12px !important;
+      font-size: 15px !important;
+      font-weight: 900;
+    }
+
+    .streak-compact {
+      max-width: 124px;
+      text-align: center;
+      line-height: 1.05;
+      padding: 8px 10px !important;
+    }
+
+    .history-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .danger.clear-history-btn {
+      color: rgba(122, 64, 64, .92) !important;
+    }
+
+    @media (max-width: 430px) {
+      .today-minimal-left .muted {
+        max-width: 42vw;
+      }
+
+      .streak-compact {
+        max-width: 108px;
+        font-size: 12px !important;
+      }
+    }
+
+  
+    /* v5.1 sync setup buttons */
+    .sync-box .actions {
+      grid-template-columns: 1fr;
+    }
+
+    @media (min-width: 640px) {
+      .sync-box .actions {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+    }
+
+  
+    /* v5.1 hide Google Sync setup after configured */
+    .sync-status-card {
+      display: none;
+    }
+
+    .sync-status-card.show {
+      display: block;
+    }
+
+    .sync-config-card.hidden {
+      display: none;
+    }
+
+    .sync-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.44);
+      border: 1px solid rgba(255,255,255,.66);
+      -webkit-backdrop-filter: blur(18px) saturate(1.5);
+      backdrop-filter: blur(18px) saturate(1.5);
+      font-size: 13px;
+      font-weight: 900;
+      color: rgba(29,29,31,.82);
+    }
+
+    .sync-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #4f7f5f;
+      box-shadow: 0 0 0 4px rgba(79,127,95,.14);
+    }
+
+    .sync-small-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-top: 12px;
+    }
+
+    @media (max-width: 430px) {
+      .sync-small-actions {
+        grid-template-columns: 1fr;
+      }
+    }
+
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <h1>James’ Skincare</h1>
+      <div class="subtitle">Weekly Product Routine</div>
+    </header>
+
+    <section class="card today-card-minimal">
+      <div class="today-minimal-row">
+        <div class="today-minimal-left">
+          <strong id="dateText">Today</strong>
+          <span class="muted" id="todayMiniText">Your routine is ready.</span>
+        </div>
+
+        <div class="today-mini-actions">
+          <span class="pill streak-compact" id="streakText">0 day streak</span>
+          <button class="secondary mini-btn" onclick="openToday()">Today</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="card sync-status-card" id="syncStatusCard">
+      <div class="routine-head">
+        <div>
+          <h2>Google Sync</h2>
+          <div class="muted">Logs/photos sync is already set up.</div>
+        </div>
+        <span class="sync-status-pill"><span class="sync-dot"></span> Connected</span>
+      </div>
+      <div class="sync-small-actions">
+        <button class="secondary" onclick="showSyncSetup()">Edit Sync</button>
+        <button class="secondary" onclick="testUpload()">Test Upload</button>
+      </div>
+    </section>
+
+    <section class="card sync-config-card" id="syncConfigCard">
+      <h2>Google Drive Sync</h2>
+      <div class="sync-box">
+        <strong style="font-size:14px;">Apps Script Web App URL</strong>
+        <p class="muted">Paste your Google Apps Script web app URL here. When saved, this setup section will hide and only show a small connected status.</p>
+        <input type="url" id="serverUrl" placeholder="https://script.google.com/macros/s/...../exec">
+        <div class="actions">
+          <button class="blue" onclick="saveServerUrl()">Save Sync URL</button>
+          <button class="secondary" onclick="testUpload()">Test Upload</button>
+          <button class="secondary" onclick="setupSheetHeaders()">Setup Sheet Headers</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Weekly Routine</h2>
+      <div class="day-list" id="weeklyList"></div>
+    </section>
+
+    <section class="card">
+      <h2>Image Storage Note</h2>
+      <div class="warning">
+        Photos are optional. Before Google Drive sync is set up, photos are stored only inside this browser on this device if you save the routine. After sync is set up, saved photos can also be uploaded to your Google Drive folder through your Apps Script web app.
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Do Not Combine</h2>
+      <div class="warning">
+        ✕ Retinol + Glycolic Acid<br>
+        ✕ Retinol + Benzac AC<br>
+        ✕ Retinol + Peeling Gel<br>
+        ✕ Retinol + Red Bean Mask<br>
+        ✕ Glycolic Acid + Benzac AC<br>
+        ✕ Vitamin C + Glycolic Acid in the same routine<br>
+        ✕ Peeling Gel + Red Bean Mask on the same night<br>
+        ✕ More than one strong active in the same routine
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="routine-head">
+        <h2>History</h2>
+        <div class="history-actions"><button class="secondary" onclick="recalculateStreak()">Recalculate Streak</button><button class="danger clear-history-btn" onclick="clearLogs()">Clear Local History</button></div>
+      </div>
+      <div id="logs"></div>
+    </section>
+
+    <section class="card">
+      <div class="routine-head">
+        <h2>App Version</h2>
+        <button class="secondary" onclick="toggleVersionHistory()">Show Changes</button>
+      </div>
+
+      <div class="version-footer">
+        Current version:
+        <button class="version-link" onclick="toggleVersionHistory()">v5.1</button>
+      </div>
+
+      <div class="version-panel" id="versionPanel">
+        <div class="version-item current">
+          <strong>v5.1, current</strong>
+          <ul>
+            <li>Google Drive Sync setup now hides automatically once a Sync URL is saved.</li>
+            <li>Added a compact Google Sync connected status card.</li>
+            <li>Added Edit Sync button so you can reveal the setup again when needed.</li>
+            <li>Kept v5.0 Setup Sheet Headers button and full version history cleanup.</li>
+          </ul>
+        </div>
+
+        <div class="version-item">
+          <strong>v4.9</strong>
+          <ul>
+            <li>Added Recalculate Streak as a read-only action.</li>
+            <li>Improved Clear Local History warning and streak reset logic.</li>
+            <li>Streak now counts unique valid dates only and ignores tests/empty logs.</li>
+          </ul>
+        </div>
+
+        <div class="version-item">
+          <strong>v4.8</strong>
+          <ul>
+            <li>Made the Today section compact and minimal.</li>
+            <li>Added a Today jump button and clearer Clear Local History label.</li>
+          </ul>
+        </div>
+
+        <div class="version-item">
+          <strong>v4.7</strong>
+          <ul>
+            <li>Added permanent storage keys so future updates keep streak/history more safely.</li>
+            <li>Added migration logic to import older logs, cleanser choices, checked states, and sync URL into stable storage.</li>
+          </ul>
+        </div>
+
+        <div class="version-item">
+          <strong>v4.6</strong>
+          <ul>
+            <li>Added dynamic streak colours and milestone captions.</li>
+            <li>Badge styling changes at 7, 14, 30, 60, and 100 days.</li>
+          </ul>
+        </div>
+
+        <div class="version-item">
+          <strong>v4.5</strong>
+          <ul>
+            <li>Made all buttons and clickable controls use the liquid glass style.</li>
+            <li>Added temporary dark gray press feedback for buttons and product cards.</li>
+          </ul>
+        </div>
+
+        <div class="version-item">
+          <strong>v4.4</strong>
+          <ul>
+            <li>Refined the liquid glass UI to look closer to iOS glass controls.</li>
+            <li>Changed selected/highlighted controls to dark gray instead of colourful highlights.</li>
+          </ul>
+        </div>
+
+        <div class="version-item">
+          <strong>v4.3</strong>
+          <ul>
+            <li>Added initial iOS-style liquid glass visual design.</li>
+            <li>Updated cards, product blocks, prompts, and version history with translucent glass styling.</li>
+          </ul>
+        </div>
+
+        <div class="version-item">
+          <strong>v4.2</strong>
+          <ul>
+            <li>Added quick ↑ / ↓ navigation buttons for easier scrolling.</li>
+            <li>Updated version history to correctly show Google Sheets + Google Drive photo sync in v3.0.</li>
+          </ul>
+        </div>
+
+        <div class="version-item">
+          <strong>v4.1</strong>
+          <ul>
+            <li>Added version number at the end of the app.</li>
+            <li>Made the version clickable to show past versions and changes.</li>
+            <li>Added show/hide previous versions section.</li>
+          </ul>
+        </div>
+
+        <div class="version-item">
+          <strong>v4.0</strong>
+          <ul>
+            <li>Added smart cleanser guidance.</li>
+            <li>Cleanser asks how skin feels before choosing Cetaphil or CeraVe.</li>
+            <li>Logs show the exact cleanser selected.</li>
+          </ul>
+        </div>
+
+        <div class="version-item">
+          <strong>v3.0</strong>
+          <ul>
+            <li>Connected the app to Google Sheets for text logs and Google Drive for optional skin photos.</li>
+            <li>Added Apps Script Web App sync URL support for uploading logs/photos.</li>
+            <li>Added product tips such as damp face, dry skin, and active-use warnings.</li>
+          </ul>
+        </div>
+
+        <div class="version-item">
+          <strong>v2.0</strong>
+          <ul>
+            <li>Added optional skin photo upload.</li>
+            <li>Added “all done” smart prompt when a routine is completed.</li>
+            <li>Added separate Cetaphil / CeraVe choice buttons.</li>
+          </ul>
+        </div>
+
+        <div class="version-item">
+          <strong>v1.0</strong>
+          <ul>
+            <li>Created weekly skincare routine by day.</li>
+            <li>Added AM and PM product lists, checkboxes, notes, timers, and local history logs.</li>
+          </ul>
+        </div>
+
+        <div class="actions">
+          <button class="secondary" onclick="togglePreviousVersions()">Show / Hide Previous Versions</button>
+        </div>
+
+        <div class="old-version-logs" id="previousVersions">
+          <div class="version-item">
+            <strong>Previous versions</strong>
+            <ul>
+              <li><strong>v5.1</strong>: Google Sync setup hides after setup, with compact connected status and Edit Sync button.</li>
+              <li><strong>v5.0</strong>: Setup Sheet Headers button and complete version history cleanup.</li>
+              <li><strong>v4.9</strong>: Safe Recalculate Streak button and clearer Clear Local History logic.</li>
+              <li><strong>v4.8</strong>: Minimal Today section and clearer local history action.</li>
+              <li><strong>v4.7</strong>: Permanent storage keys and automatic migration from older versions.</li>
+              <li><strong>v4.6</strong>: Dynamic streak colours and milestone captions.</li>
+              <li><strong>v4.5</strong>: All clickable controls use liquid glass, with temporary dark gray press feedback.</li>
+              <li><strong>v4.4</strong>: Refined iOS liquid glass controls with dark gray selected states.</li>
+              <li><strong>v4.3</strong>: Initial iOS liquid glass visual refresh.</li>
+              <li><strong>v4.2</strong>: Quick ↑ / ↓ navigation buttons and corrected sync version history.</li>
+              <li><strong>v4.1</strong>: Version number, clickable changelog, and previous versions toggle.</li>
+              <li><strong>v4.0</strong>: Smart cleanser choice, dry/tight = CeraVe, normal/oily/sweaty = Cetaphil.</li>
+              <li><strong>v3.0</strong>: Google Sheets for logs, Google Drive for photos, Apps Script sync URL, and product tips added.</li>
+              <li><strong>v2.0</strong>: Optional photo upload, all-done prompt, and cleanser choice buttons.</li>
+              <li><strong>v1.0</strong>: First weekly routine app with product lists, checks, notes, timers, and history.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+
+  </main>
+
+
+  <div class="quick-nav" aria-label="Quick navigation">
+    <button onclick="scrollToTop()" title="Go up">↑</button>
+    <button onclick="scrollToBottom()" title="Go down">↓</button>
+  </div>
+
+  <div class="toast" id="toast">Saved</div>
+
+  <script>
+    const cleanserOptions = [
+      {
+        label: "Feeling dry / tight?",
+        short: "CeraVe",
+        full: "CeraVe Hydrating Foaming Oil Cleanser",
+        tip: "Use this when your skin feels dry, tight, dehydrated, or your barrier feels weak."
+      },
+      {
+        label: "Feeling normal / oily?",
+        short: "Cetaphil",
+        full: "Cetaphil Gentle Skin Cleanser",
+        tip: "Use this when your skin feels normal, oily, sweaty, or you want a simple gentle cleanse."
+      }
+    ];
+
+    const TIPS = {
+      cleanser: "Use on damp face, massage gently for 30 to 60 seconds, then rinse. Do not scrub.",
+      vitaminC: "Use on dry skin after cleansing. Start with a small amount. Follow with hydration, moisturiser, and sunscreen.",
+      essence: "Best on slightly damp skin. Pat in, do not rub hard.",
+      cream: "Use on slightly damp skin to seal hydration. Use more if your face feels tight.",
+      sunscreen: "Use as the last morning step. Apply enough and reapply if outside or sweating.",
+      retinol: "Use at night on dry skin. Avoid eyes, mouth corners, and nose creases. Do not use with acids, Benzac, peeling gel, or masks.",
+      squalane: "Use as the last step when skin feels dry. A few drops only.",
+      glycolic: "Use at night on clean, dry skin. Avoid eyes and broken skin. Do not use with retinol, Benzac, or exfoliating masks.",
+      benzac: "Use as spot treatment only on pimples. Let it dry, then moisturise. It can bleach fabrics.",
+      redbean: "Use after cleansing. Leave for around 10 minutes, then rinse. Do not combine with peeling gel or retinol.",
+      peeling: "Use on clean, dry skin. Massage gently, do not over-rub. Rinse after around 1 to 2 minutes.",
+      antipodes: "Use at night as an optional richer cream if dry. Skip if skin feels heavy or congested."
+    };
+
+    const P = {
+      cleanser: { name: "Cleanser", use: "Choose based on how your skin feels today.", cleanser: true, tip: "Feeling dry or tight? Use CeraVe Hydrating Foaming Oil Cleanser. Feeling normal, oily, or sweaty? Use Cetaphil Gentle Skin Cleanser." },
+      essence: { name: "COSRX Hyaluronic Acid Hydra Power Essence", use: "Hydration layer.", tip: TIPS.essence },
+      cream: { name: "COSRX Hyaluronic Acid Intensive Cream", use: "Moisturiser.", tip: TIPS.cream },
+      sunscreen: { name: "SKIN1004 Hyalu-Cica Water-Fit Sun Serum SPF50+", use: "Sunscreen, final morning step.", tip: TIPS.sunscreen },
+      vitaminC: { name: "COSRX Vitamin C 23", use: "Active treatment.", active: true, tip: TIPS.vitaminC },
+      retinol: { name: "COSRX The Retinol 0.5 Oil", use: "Retinol active. Avoid other actives tonight.", active: true, tip: TIPS.retinol },
+      squalane: { name: "The Ordinary 100% Plant-Derived Squalane", use: "Optional if dry.", tip: TIPS.squalane },
+      glycolic: { name: "The Ordinary Glycolic Acid 7% Toner", use: "Exfoliating active. Avoid retinol, Benzac, masks tonight.", active: true, tip: TIPS.glycolic },
+      benzac: { name: "Benzac AC 5% Spot Treatment", use: "Only on pimples. Skip if not needed.", active: true, tip: TIPS.benzac },
+      redbean: { name: "Beauty of Joseon Red Bean Refreshing Pore Mask", use: "Choose this OR peeling gel, not both.", timer: 600, active: true, tip: TIPS.redbean },
+      peeling: { name: "Beauty of Joseon Apricot Blossom Peeling Gel", use: "Choose this OR red bean mask, not both.", timer: 120, active: true, tip: TIPS.peeling },
+      antipodes: { name: "Antipodes Avocado Pear Night Cream", use: "Optional if dry.", tip: TIPS.antipodes }
+    };
+
+    function makeProducts(keys) {
+      return keys.map(k => Object.assign({}, P[k]));
+    }
+
+    const week = [
+      { day: "Monday", index: 1,
+        am: { title: "Vitamin C Morning", products: makeProducts(["cleanser", "vitaminC", "essence", "cream", "sunscreen"]) },
+        pm: { title: "Retinol Night", products: makeProducts(["cleanser", "essence", "cream", "retinol", "squalane"]) }
+      },
+      { day: "Tuesday", index: 2,
+        am: { title: "Simple Morning", products: makeProducts(["cleanser", "essence", "cream", "sunscreen"]) },
+        pm: { title: "Recovery Night", products: makeProducts(["cleanser", "essence", "cream", "antipodes"]) }
+      },
+      { day: "Wednesday", index: 3,
+        am: { title: "Vitamin C Morning", products: makeProducts(["cleanser", "vitaminC", "essence", "cream", "sunscreen"]) },
+        pm: { title: "Glycolic Night", products: makeProducts(["cleanser", "glycolic", "essence", "cream", "squalane"]) }
+      },
+      { day: "Thursday", index: 4,
+        am: { title: "Simple Morning", products: makeProducts(["cleanser", "essence", "cream", "sunscreen"]) },
+        pm: { title: "Recovery Night", products: makeProducts(["cleanser", "essence", "cream", "antipodes"]) }
+      },
+      { day: "Friday", index: 5,
+        am: { title: "Vitamin C Morning", products: makeProducts(["cleanser", "vitaminC", "essence", "cream", "sunscreen"]) },
+        pm: { title: "Recovery + Benzac If Needed", products: makeProducts(["cleanser", "essence", "benzac", "cream", "squalane"]) }
+      },
+      { day: "Saturday", index: 6,
+        am: { title: "Simple Morning", products: makeProducts(["cleanser", "essence", "cream", "sunscreen"]) },
+        pm: { title: "Mask / Exfoliation Night", products: makeProducts(["cleanser", "redbean", "peeling", "essence", "cream", "antipodes"]) }
+      },
+      { day: "Sunday", index: 0,
+        am: { title: "Simple Morning", products: makeProducts(["cleanser", "essence", "cream", "sunscreen"]) },
+        pm: { title: "Recovery Night", products: makeProducts(["cleanser", "essence", "cream", "antipodes"]) }
+      }
+    ];
+
+    let photoData = {};
+    let timers = {};
+
+
+    const STORAGE_KEYS = {
+      logs: "jamesSkincareLogs",
+      checked: "jamesSkincareChecked",
+      cleanser: "jamesSkincareCleanserChoice",
+      serverUrl: "jamesSkincareServerUrl"
+    };
+
+    function readJSON(key, fallback) {
+      try {
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : fallback;
+      } catch (e) {
+        return fallback;
+      }
+    }
+
+    function migrateLegacyData() {
+      const legacyLogKeys = [
+        "jamesSkincareLogs",
+        "jamesSkincareLogsV5",
+        "jamesSkincareLogsV4",
+        "jamesSkincareLogsV3",
+        "jamesSkincareLogsV2",
+        "jamesSkincareLogs"
+      ];
+
+      const legacyCheckedKeys = [
+        "jamesSkincareChecked",
+        "jamesSkincareCheckedV5",
+        "jamesSkincareCheckedV4",
+        "jamesSkincareCheckedV3"
+      ];
+
+      const legacyCleanserKeys = [
+        "jamesSkincareCleanserChoice",
+        "jamesSkincareCleanserChoiceV5",
+        "jamesSkincareCleanserChoiceV4"
+      ];
+
+      const legacyServerKeys = [
+        "jamesSkincareServerUrl",
+        "jamesSkincareServerUrlV5"
+      ];
+
+      // Logs: merge and de-duplicate by id + timestamp + routine
+      const mergedLogs = [];
+      const seenLogs = new Set();
+      legacyLogKeys.forEach(key => {
+        const data = readJSON(key, []);
+        if (Array.isArray(data)) {
+          data.forEach(log => {
+            const fingerprint = `${log.id || ""}|${log.savedAt || ""}|${log.day || ""}|${log.period || ""}|${log.routine || ""}`;
+            if (!seenLogs.has(fingerprint)) {
+              seenLogs.add(fingerprint);
+              mergedLogs.push(log);
+            }
+          });
+        }
+      });
+      if (mergedLogs.length) {
+        mergedLogs.sort((a, b) => new Date(b.savedAt || 0) - new Date(a.savedAt || 0));
+        localStorage.setItem(STORAGE_KEYS.logs, JSON.stringify(mergedLogs));
+      }
+
+      // Checked states: latest object wins key by key
+      const mergedChecked = {};
+      legacyCheckedKeys.forEach(key => {
+        const data = readJSON(key, {});
+        if (data && typeof data === "object" && !Array.isArray(data)) {
+          Object.assign(mergedChecked, data);
+        }
+      });
+      if (Object.keys(mergedChecked).length) {
+        localStorage.setItem(STORAGE_KEYS.checked, JSON.stringify(mergedChecked));
+      }
+
+      // Cleanser choices
+      const mergedCleanser = {};
+      legacyCleanserKeys.forEach(key => {
+        const data = readJSON(key, {});
+        if (data && typeof data === "object" && !Array.isArray(data)) {
+          Object.assign(mergedCleanser, data);
+        }
+      });
+      if (Object.keys(mergedCleanser).length) {
+        localStorage.setItem(STORAGE_KEYS.cleanser, JSON.stringify(mergedCleanser));
+      }
+
+      // Server URL
+      for (const key of legacyServerKeys) {
+        const value = localStorage.getItem(key);
+        if (value && !localStorage.getItem(STORAGE_KEYS.serverUrl)) {
+          localStorage.setItem(STORAGE_KEYS.serverUrl, value);
+        }
+      }
+    }
+
+    migrateLegacyData();
+
+    let checked = readJSON(STORAGE_KEYS.checked, {});
+    let cleanserChoice = readJSON(STORAGE_KEYS.cleanser, {});
+
+
+    function openToday() {
+      const index = new Date().getDay();
+      const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+      const targetDay = dayNames[index];
+      const headers = Array.from(document.querySelectorAll(".day-header"));
+
+      const targetHeader = headers.find(header => header.textContent.includes(targetDay));
+      if (targetHeader) {
+        const card = targetHeader.closest(".day-card");
+        if (card) card.classList.add("open");
+        targetHeader.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+
+    function updateTodayMiniText() {
+      const index = new Date().getDay();
+      const day = week.find(d => d.index === index);
+      const text = document.getElementById("todayMiniText");
+      if (day && text) {
+        text.textContent = `${day.am.title} + ${day.pm.title}`;
+      }
+    }
+
+
+    function todayIndex() { return new Date().getDay(); }
+
+    function saveChecked() {
+      localStorage.setItem(STORAGE_KEYS.checked, JSON.stringify(checked));
+      localStorage.setItem(STORAGE_KEYS.cleanser, JSON.stringify(cleanserChoice));
+    }
+
+    function key(dayName, period, productIndex) {
+      const date = new Date().toDateString();
+      return `${date}-${dayName}-${period}-${productIndex}`;
+    }
+
+    function routineKey(dayName, period) {
+      const date = new Date().toDateString();
+      return `${date}-${dayName}-${period}`;
+    }
+
+    function renderDate() {
+      const now = new Date();
+      document.getElementById("dateText").textContent =
+        now.toLocaleDateString(undefined, { weekday: "long", month: "short", day: "numeric" });
+      const url = localStorage.getItem(STORAGE_KEYS.serverUrl) || "";
+      document.getElementById("serverUrl").value = url;
+    }
+
+    function renderWeeklyList() {
+      const wrap = document.getElementById("weeklyList");
+      wrap.innerHTML = "";
+
+      week.forEach(day => {
+        const card = document.createElement("div");
+        const isToday = day.index === todayIndex();
+        card.className = "day-card" + (isToday ? " open" : "");
+
+        card.innerHTML = `
+          <button class="day-header ${isToday ? "today" : ""}" onclick="toggleDay(this)">
+            <div>
+              <h3>${day.day}</h3>
+              <span class="muted" style="${isToday ? "color:#f4f4f4" : ""}">
+                ${day.am.title} + ${day.pm.title}
+              </span>
+            </div>
+            <span class="arrow">⌄</span>
+          </button>
+          <div class="day-content">
+            ${routineBlock(day, "AM", day.am)}
+            ${routineBlock(day, "PM", day.pm)}
+          </div>
+        `;
+
+        wrap.appendChild(card);
+      });
+
+      updateAllDoneCounts();
+      updateAllPrompts();
+    }
+
+    function routineBlock(day, period, routine) {
+      const productHtml = routine.products.map((product, i) => {
+        const productKey = key(day.day, period, i);
+        const isDone = !!checked[productKey];
+        const rKey = routineKey(day.day, period);
+
+        let cleanserHtml = "";
+        if (product.cleanser) {
+          cleanserHtml = `
+            <div class="cleanser-choice">
+              ${cleanserOptions.map(option => `
+                <button class="choice-btn ${cleanserChoice[rKey] === option.full ? "selected" : ""}"
+                  onclick="event.stopPropagation(); chooseCleanser('${day.day}', '${period}', '${option.full}')">
+                  ${option.label}<br>
+                  <span style="font-size:15px;">${option.short}</span><br>
+                  <span style="font-weight:700; opacity:.85;">${option.tip}</span>
+                </button>
+              `).join("")}
+            </div>
+          `;
+        }
+
+        let timerHtml = "";
+        if (product.timer) {
+          timerHtml = `
+            <div class="timer-row">
+              <div>
+                <div class="muted">Timer</div>
+                <div class="timer" id="timer-${day.day}-${period}-${i}">${formatTime(product.timer)}</div>
+              </div>
+              <div>
+                <button class="timer-btn" onclick="event.stopPropagation(); startTimer('${day.day}', '${period}', ${i}, ${product.timer})">Start</button>
+                <button class="timer-btn secondary" onclick="event.stopPropagation(); resetTimer('${day.day}', '${period}', ${i}, ${product.timer})">Reset</button>
+              </div>
+            </div>
+          `;
+        }
+
+        return `
+          <div class="product ${isDone ? "done" : ""}" onclick="toggleProduct('${day.day}', '${period}', ${i}, this)">
+            <div class="check">✓</div>
+            <div>
+              <div class="product-name">${product.name}</div>
+              <div class="product-use">${product.use}</div>
+              <div class="tip">Tip: ${product.tip || "Use gently and stop if irritation happens."}</div>
+              ${cleanserHtml}
+              <div class="badge-row">
+                ${product.active ? `<span class="badge active">Active</span>` : `<span class="badge">Barrier-safe</span>`}
+                ${product.timer ? `<span class="badge">Timer needed</span>` : ``}
+                ${product.cleanser ? `<span class="badge">Choose one</span>` : ``}
+              </div>
+              ${timerHtml}
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      return `
+        <div class="routine-block">
+          <div class="routine-title-row">
+            <div>
+              <div class="routine-label">${period === "AM" ? "☀️ Morning" : "☾ Night"}</div>
+              <h3>${routine.title}</h3>
+            </div>
+            <span class="pill" id="count-${day.day}-${period}">0/${routine.products.length}</span>
+          </div>
+
+          <div class="products">${productHtml}</div>
+
+          <div class="smart-prompt" id="prompt-${day.day}-${period}">
+            ✨ All done. Save this routine so it goes into your history and syncs if Google Drive upload is set up.
+          </div>
+
+          <textarea id="note-${day.day}-${period}" placeholder="Notes for ${day.day} ${period}, example: dry, breakout, irritated..."></textarea>
+
+          <div class="photo-box">
+            <div class="photo-row">
+              <div>
+                <strong style="font-size:14px;">Optional skin photo</strong><br>
+                <span class="muted">Stored locally, and uploaded only if sync is set.</span>
+              </div>
+              <input type="file" accept="image/*" onchange="handlePhoto('${day.day}', '${period}', this)">
+            </div>
+            <img class="preview" id="preview-${day.day}-${period}" alt="Skin photo preview">
+          </div>
+
+          <div class="actions">
+            <button class="primary" onclick="saveRoutine('${day.day}', '${period}')">Save ${period}</button>
+            <button class="secondary" onclick="resetRoutine('${day.day}', '${period}')">Reset ${period}</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function toggleDay(button) {
+      button.parentElement.classList.toggle("open");
+    }
+
+    function getDay(dayName) {
+      return week.find(d => d.day === dayName);
+    }
+
+    function getRoutine(dayName, period) {
+      const day = getDay(dayName);
+      return period === "AM" ? day.am : day.pm;
+    }
+
+    function chooseCleanser(dayName, period, option) {
+      cleanserChoice[routineKey(dayName, period)] = option;
+      saveChecked();
+      renderWeeklyList();
+      showToast(`${option.includes("Cetaphil") ? "Cetaphil" : "CeraVe"} selected`);
+    }
+
+    function toggleProduct(dayName, period, index, el) {
+      const productKey = key(dayName, period, index);
+      const product = getRoutine(dayName, period).products[index];
+
+      if (product.cleanser && !cleanserChoice[routineKey(dayName, period)]) {
+        showToast("Choose Cetaphil or CeraVe first");
+        return;
+      }
+
+      checked[productKey] = !checked[productKey];
+      if (!checked[productKey]) delete checked[productKey];
+      saveChecked();
+      el.classList.toggle("done");
+      updateDoneCount(dayName, period);
+      updatePrompt(dayName, period);
+    }
+
+    function updateDoneCount(dayName, period) {
+      const routine = getRoutine(dayName, period);
+      let count = 0;
+
+      routine.products.forEach((_, i) => {
+        if (checked[key(dayName, period, i)]) count++;
+      });
+
+      const el = document.getElementById(`count-${dayName}-${period}`);
+      if (el) el.textContent = `${count}/${routine.products.length}`;
+    }
+
+    function isRoutineComplete(dayName, period) {
+      const routine = getRoutine(dayName, period);
+      return routine.products.every((_, i) => checked[key(dayName, period, i)]);
+    }
+
+    function updatePrompt(dayName, period) {
+      const el = document.getElementById(`prompt-${dayName}-${period}`);
+      if (!el) return;
+      el.style.display = isRoutineComplete(dayName, period) ? "block" : "none";
+    }
+
+    function updateAllDoneCounts() {
+      week.forEach(day => {
+        updateDoneCount(day.day, "AM");
+        updateDoneCount(day.day, "PM");
+      });
+    }
+
+    function updateAllPrompts() {
+      week.forEach(day => {
+        updatePrompt(day.day, "AM");
+        updatePrompt(day.day, "PM");
+      });
+    }
+
+    function resetRoutine(dayName, period) {
+      const routine = getRoutine(dayName, period);
+      routine.products.forEach((_, i) => {
+        delete checked[key(dayName, period, i)];
+      });
+      delete cleanserChoice[routineKey(dayName, period)];
+      delete photoData[routineKey(dayName, period)];
+      saveChecked();
+      renderWeeklyList();
+      showToast(`${dayName} ${period} reset`);
+    }
+
+    function handlePhoto(dayName, period, input) {
+      const file = input.files && input.files[0];
+      if (!file) return;
+
+      if (file.size > 4 * 1024 * 1024) {
+        showToast("Photo too large. Use under 4 MB.");
+        input.value = "";
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        photoData[routineKey(dayName, period)] = {
+          dataUrl: e.target.result,
+          name: file.name,
+          type: file.type || "image/jpeg"
+        };
+        const preview = document.getElementById(`preview-${dayName}-${period}`);
+        preview.src = e.target.result;
+        preview.style.display = "block";
+        showToast("Photo added locally");
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function saveRoutine(dayName, period) {
+      const routine = getRoutine(dayName, period);
+      const rKey = routineKey(dayName, period);
+
+      const done = routine.products
+        .filter((_, i) => checked[key(dayName, period, i)])
+        .map(p => p.cleanser ? (cleanserChoice[rKey] || "Cleanser, not selected") : p.name);
+
+      const cleanserNeeded = routine.products.some(p => p.cleanser);
+      if (cleanserNeeded && checked[key(dayName, period, 0)] && !cleanserChoice[rKey]) {
+        showToast("Pick Cetaphil or CeraVe first");
+        return;
+      }
+
+      const noteEl = document.getElementById(`note-${dayName}-${period}`);
+      const note = noteEl ? noteEl.value.trim() : "";
+      const photo = photoData[rKey] || null;
+
+      const log = {
+        id: Date.now(),
+        savedAt: new Date().toISOString(),
+        day: dayName,
+        period,
+        routine: routine.title,
+        used: done,
+        note,
+        photoName: photo ? photo.name : "",
+        photoType: photo ? photo.type : "",
+        photoBase64: photo ? photo.dataUrl : ""
+      };
+
+      const logs = getLogs();
+      logs.unshift(log);
+      localStorage.setItem(STORAGE_KEYS.logs, JSON.stringify(logs));
+
+      if (noteEl) noteEl.value = "";
+      delete photoData[rKey];
+
+      renderLogs();
+      renderStreak();
+
+      if (isRoutineComplete(dayName, period)) {
+        showToast("All done and saved ✨");
+      } else {
+        showToast(`${dayName} ${period} saved`);
+      }
+
+      uploadLog(log);
+    }
+
+    function getLogs() {
+      return JSON.parse(localStorage.getItem(STORAGE_KEYS.logs) || "[]");
+    }
+
+    function renderLogs() {
+      const logs = getLogs();
+      const el = document.getElementById("logs");
+      el.innerHTML = "";
+
+      if (!logs.length) {
+        el.innerHTML = `<div class="empty">No logs yet. Tick products, then save AM or PM.</div>`;
+        return;
+      }
+
+      logs.slice(0, 30).forEach(log => {
+        const d = new Date(log.savedAt);
+        const div = document.createElement("div");
+        div.className = "log";
+        div.innerHTML = `
+          <div class="log-top">
+            <strong>${log.day} ${log.period}: ${log.routine}</strong>
+            <small>${d.toLocaleDateString()} ${d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</small>
+          </div>
+          <p><strong>Used:</strong> ${log.used.length ? log.used.join(", ") : "No products ticked"}</p>
+          ${log.note ? `<p><strong>Note:</strong> ${log.note}</p>` : ""}
+          ${log.photoBase64 ? `<img src="${log.photoBase64}" alt="Saved skin photo">` : ""}
+        `;
+        el.appendChild(div);
+      });
+    }
+
+    function clearLogs() {
+      const message =
+        "Clear local history on this device?\\n\\n" +
+        "This removes local logs and local photo previews, so the local streak will reset to 0.\\n\\n" +
+        "It will NOT delete Google Sheets logs, Google Drive photos, the sync URL, product setup, or version history.";
+
+      if (confirm(message)) {
+        localStorage.removeItem(STORAGE_KEYS.logs);
+        renderLogs();
+        renderStreak();
+        showToast("Local history cleared, streak reset");
+      }
+    }
+
+    function recalculateStreak() {
+      renderStreak();
+      showToast("Streak recalculated from valid local logs");
+    }
+
+    
+function renderStreak() {
+      const logs = getLogs();
+
+      const validDates = new Set(
+        logs
+          .filter(log => {
+            const routine = String(log.routine || "").toLowerCase();
+            const day = String(log.day || "").toLowerCase();
+            const period = String(log.period || "").toLowerCase();
+            const used = Array.isArray(log.used) ? log.used : [];
+
+            const isTest =
+              routine.includes("test") ||
+              day.includes("test") ||
+              period.includes("test") ||
+              log.isTest === true;
+
+            return !isTest && used.length > 0 && (log.savedAt || log.date);
+          })
+          .map(log => new Date(log.savedAt || log.date).toDateString())
+      );
+
+      let streak = 0;
+      const today = new Date();
+
+      for (let i = 0; i < 365; i++) {
+        const check = new Date(today);
+        check.setDate(today.getDate() - i);
+
+        if (validDates.has(check.toDateString())) {
+          streak++;
+        } else if (i === 0) {
+          continue;
+        } else {
+          break;
+        }
+      }
+
+      const pill = document.getElementById("streakText");
+      if (!pill) return;
+
+      const classes = ["streak-0", "streak-7", "streak-14", "streak-30", "streak-60", "streak-100"];
+      pill.classList.remove(...classes);
+
+      let tier = "streak-0";
+      let caption = "Getting started";
+
+      if (streak >= 100) {
+        tier = "streak-100";
+        caption = "Elite routine";
+      } else if (streak >= 60) {
+        tier = "streak-60";
+        caption = "Locked in";
+      } else if (streak >= 30) {
+        tier = "streak-30";
+        caption = "Monthly glow";
+      } else if (streak >= 14) {
+        tier = "streak-14";
+        caption = "Skin discipline";
+      } else if (streak >= 7) {
+        tier = "streak-7";
+        caption = "Consistent ✨";
+      }
+
+      pill.classList.add(tier);
+      pill.innerHTML = `${streak} day${streak === 1 ? "" : "s"} streak <span class="streak-caption">${caption}</span>`;
+    }
+
+
+    function hasSyncUrl() {
+      const url = localStorage.getItem(STORAGE_KEYS.serverUrl);
+      return !!(url && url.trim());
+    }
+
+    function updateSyncVisibility() {
+      const statusCard = document.getElementById("syncStatusCard");
+      const configCard = document.getElementById("syncConfigCard");
+      const input = document.getElementById("serverUrl");
+      const url = localStorage.getItem(STORAGE_KEYS.serverUrl) || "";
+
+      if (input) input.value = url;
+
+      if (!statusCard || !configCard) return;
+
+      if (hasSyncUrl()) {
+        statusCard.classList.add("show");
+        configCard.classList.add("hidden");
+      } else {
+        statusCard.classList.remove("show");
+        configCard.classList.remove("hidden");
+      }
+    }
+
+    function showSyncSetup() {
+      const statusCard = document.getElementById("syncStatusCard");
+      const configCard = document.getElementById("syncConfigCard");
+      if (statusCard) statusCard.classList.remove("show");
+      if (configCard) configCard.classList.remove("hidden");
+      const input = document.getElementById("serverUrl");
+      if (input) input.focus();
+    }
+
+    function saveServerUrl() {
+      const url = document.getElementById("serverUrl").value.trim();
+      localStorage.setItem(STORAGE_KEYS.serverUrl, url);
+      updateSyncVisibility();
+      showToast(url ? "Sync URL saved, setup hidden" : "Sync URL cleared");
+    }
+
+    async function uploadLog(log) {
+      const url = localStorage.getItem(STORAGE_KEYS.serverUrl);
+      if (!url) return;
+
+      const payload = Object.assign({}, log, {
+        app: "James Skincare",
+        uploadedFrom: location.href
+      });
+
+      try {
+        await fetch(url, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload)
+        });
+        showToast("Saved locally + upload sent");
+      } catch (err) {
+        showToast("Saved locally, upload failed");
+      }
+    }
+
+    function testUpload() {
+      saveServerUrl();
+      const test = {
+        id: Date.now(),
+        savedAt: new Date().toISOString(),
+        day: "Test",
+        period: "TEST",
+        routine: "Connection Test",
+        used: ["Test product"],
+        note: "This is a test upload from James Skincare.",
+        photoName: "",
+        photoType: "",
+        photoBase64: ""
+      };
+      uploadLog(test);
+    }
+
+
+    function setupSheetHeaders() {
+      saveServerUrl();
+      const url = localStorage.getItem(STORAGE_KEYS.serverUrl);
+      if (!url) {
+        showToast("Add Sync URL first");
+        return;
+      }
+
+      const setupPayload = {
+        action: "setupSheet",
+        app: "James Skincare",
+        requestedAt: new Date().toISOString()
+      };
+
+      fetch(url, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(setupPayload)
+      })
+      .then(() => showToast("Header setup sent"))
+      .catch(() => showToast("Header setup failed"));
+    }
+
+    function formatTime(seconds) {
+      const m = Math.floor(seconds / 60);
+      const s = seconds % 60;
+      return `${m}:${String(s).padStart(2, "0")}`;
+    }
+
+    function timerId(dayName, period, index) {
+      return `${dayName}-${period}-${index}`;
+    }
+
+    function startTimer(dayName, period, index, seconds) {
+      const id = timerId(dayName, period, index);
+      if (timers[id]?.interval) clearInterval(timers[id].interval);
+      if (!timers[id]) timers[id] = { remaining: seconds, interval: null };
+      if (timers[id].remaining <= 0) timers[id].remaining = seconds;
+
+      updateTimer(dayName, period, index);
+
+      timers[id].interval = setInterval(() => {
+        timers[id].remaining -= 1;
+        updateTimer(dayName, period, index);
+
+        if (timers[id].remaining <= 0) {
+          clearInterval(timers[id].interval);
+          timers[id].interval = null;
+          showToast("Timer done, rinse now");
+          if ("vibrate" in navigator) navigator.vibrate([200, 100, 200]);
+        }
+      }, 1000);
+    }
+
+    function resetTimer(dayName, period, index, seconds) {
+      const id = timerId(dayName, period, index);
+      if (timers[id]?.interval) clearInterval(timers[id].interval);
+      timers[id] = { remaining: seconds, interval: null };
+      updateTimer(dayName, period, index);
+    }
+
+    function updateTimer(dayName, period, index) {
+      const id = timerId(dayName, period, index);
+      const el = document.getElementById(`timer-${dayName}-${period}-${index}`);
+      if (el && timers[id]) el.textContent = formatTime(timers[id].remaining);
+    }
+
+    function showToast(text) {
+      const toast = document.getElementById("toast");
+      toast.textContent = text;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 1800);
+    }
+
+
+    function toggleVersionHistory() {
+      const panel = document.getElementById("versionPanel");
+      if (!panel) return;
+      panel.classList.toggle("show");
+    }
+
+    function togglePreviousVersions() {
+      const box = document.getElementById("previousVersions");
+      if (!box) return;
+      box.classList.toggle("show");
+    }
+
+
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function scrollToBottom() {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+    }
+
+
+    function addTemporaryGlassPress(el) {
+      if (!el) return;
+      el.classList.add("glass-pressed");
+      clearTimeout(el._glassPressTimer);
+      el._glassPressTimer = setTimeout(() => {
+        el.classList.remove("glass-pressed");
+      }, 2500);
+    }
+
+    document.addEventListener("click", function(event) {
+      const clickable = event.target.closest("button, .product");
+      if (clickable) addTemporaryGlassPress(clickable);
+    }, true);
+
+    renderDate();
+    updateSyncVisibility();
+    updateTodayMiniText();
+    renderWeeklyList();
+    renderLogs();
+    renderStreak();
+  </script>
+</body>
+</html>
